@@ -1,0 +1,83 @@
+*{
+    background-color: #ededed;
+}
+
+#form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#set-name{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    border-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+}
+
+#name{
+    height: 30px;
+    width: 300px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: aliceblue;
+}
+
+#meeting-id{
+    height: 30px;
+    width: 300px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: aliceblue;
+}
+
+#submit{
+    width: 100px;
+    border-radius: 20px;
+    background-color: rgb(117, 117, 182);
+    color: aliceblue;
+    height: 30px;
+    margin: 10px;
+}
+
+#submit:hover{
+    transform: scaleX(1.2);
+    transform: scaleY(1.2);
+    background: blue;
+}
+
+.animation-container{
+    display: flex;
+}
+
+#building{
+    position: absolute;
+    left: 20px;
+    bottom: 100px;
+}
+
+#cyclist{
+    position: absolute;
+    left: 230px;
+    bottom: 120px;
+    animation-name: drive;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+#office{
+    position: absolute;
+    right: 20px;
+    bottom: 100px;
+}
+
+@keyframes drive {
+    from{transform: translateX(0);}
+    to{transform: translateX(800px);}
+}
+
+

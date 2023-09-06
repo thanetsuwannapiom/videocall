@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="icon" href="/assets/msteams-icon.png" type="image/x-icon"/>
+  <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script defer src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js'></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script defer>
+    const ROOM_ID = "<%= roomId %>"
+  </script>
+  <script defer src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+  <script defer src="/socket.io/socket.io.js" defer></script>
+  <script defer src="script.js" defer></script>
+  <title>Teams</title>
+  <style>
+    *{
+      background-color: gray;
+    }
+
+    .share-form{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #mailid{
+      width: 300px;
+      height: 30px;
+      background-color: aliceblue;
+    }
+
+    #share-button{
+      height: 35px;
+      width: 35px;
+      background-color: aliceblue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #videopluschat{
+      width:100%;
+      height:80%;
+      display: flex;
+    }
+
+    
+    
+    #video-grid {
+      display: flex;
+      width: 70%;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+    
+    video {
+      display: block;
+      flex: 1;
+      width: 100px;
+      margin: auto;
+      object-fit: cover;
+      border-radius: 10px;
+      max-width: 600px;
+      border: 1px solid gold;
+    }
+
+    #chat-grid{
+      width:30%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+    }
+
+    #chat-contents{
+      height:400px;
+      background-color: grey;
+      border-radius: 20px;
+      padding: 10px;
+      margin-bottom: 5px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+
+    #form{
+      width: 100%;
+    }
+
+    
+
+    input{
+      caret-color: aliceblue;
+      cursor: url('/assets/icons8-cursor.svg');
+    }
+
+    #send-message{
+      height: 40px;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      background-color: grey;
+      border-radius: 30px;
+    }
+
+    #message-input{
+      width: 90%;
+      background-color: aliceblue;
+      border-radius: 5px;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+    
+    #send-button{
+      width: 10%;
+      background-color: black;
+      border-radius: 30px;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+
+    .control-panel-wrapper{
+      position: absolute;
+      bottom: 0px;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 80px;
+      left: 0px;
+      right: 0px;
+    }
+
+    .control-panel{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+    }
+
+    .control-elements{
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      border: 1px solid red;
+      border-radius: 30px;
+      background-color: aliceblue;
+      margin-left: 20px;
+      margin-right: 20px;
+      height: 20px;
+      width: 20px;
+      align-items: center;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .control-elements:hover{
+      height: 30px;
+      width: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .board{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: aliceblue;
+      height: 30px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid green;
+      margin: 1px;
+      cursor: pointer;
+    }
+
+    .board:hover{
+      transform: scaleX(1.2);
+      transform: scaleY(1.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="share-wrapper">
+    <form class="share-form">
+      <input id="mailid" type="email" placeholder="Share the link with others..."></input>
+      <button type="button" id="share-button">
+        <img src="/assets/share-icon.png" alt="" height="30" width="30" style="background-color: aliceblue;"/>
+        
+      </button>
+    </form>
+  </div>
+
+
+  <div id="videopluschat">
+  
+  <div id="video-grid"></div>
+  
+  <div id="chat-grid">
+    <div id="chat-container">
+      <h5 style="color: #A9A9A9; text-align: center;">INBOX</h5>
+
+      <div id="chat-contents">
+        <div style="background-color: gray; display:flex; justify-content: center; align-items: center;">
+          <img src="/assets/rocket.png" alt="" width="50" height="50">
+        </div>
+        <h5 style="color: #A9A9A9; text-align: center;">Your messages will be diplayed here...</h5>
+        <div style="background-color: #A9A9A9; height: 1px; width: 100%"></div>
+      </div>
+    </div>
+    <form id="form">
+      <div id="send-message">
+        <input type="text" id="message-input" placeholder="Type your message here..." style="color: black;"></input>
+        <button type="button" id="send-button">
+          <i class="fa fa-paper-plane-o" style="background-color: black; color: aliceblue"></i>
+        </button>
+    </div>
+    </form>
+  </div>
+
+  <div class="control-panel-wrapper">
+    <div class="control-panel">
+      
+      <div class="control-elements" id="element-2">
+        <i class="fa fa-video-camera" style="color: red; background-color: aliceblue;"></i>
+        
+      </div>
+      <div class="control-elements" id="element-3">
+        <i class="fa fa-phone" style="color: red; background-color: aliceblue;"></i>
+        
+      </div>
+      <div class="control-elements" id="element-4">
+        <i class="fa fa-microphone" style="color: red; background-color: aliceblue;"></i>
+        
+      </div>
+      <div class="control-elements" id="element-5">
+        <i class="fa fa-upload" style="color: red; background-color: aliceblue;"></i>
+        
+      </div>
+      
+      <a href='/home/whiteboard' target='_blank'>
+      <div class="board">
+        <img src="/assets/whiteboard-icon.jpg" width="50" height="50" alt=""/>
+        <h5 style="background-color: aliceblue; font-family: cursive;">WhiteBoard</h5>
+      </div>
+      </a>
+      <div class='board' id='element-6' style="width: 100px;">
+        <img src="/assets/recording-icon.jpg" width="50" height="50" alt=""/>
+        <h5 style="background-color: aliceblue; font-family: cursive;">Record</h5>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
